@@ -1,4 +1,4 @@
-from flask import Flask, render_template, flash, Markup
+from flask import Flask, render_template, flash, Markup, redirect
 
 # Module-level variables that mostly get set in the run.py script.
 # There must be a cleaner way to do this, but Flask seems to want to
@@ -60,4 +60,4 @@ def set_route(route_index):
                      .format(did_id, name)), 'big_flash')
         flash('It may take a few minutes to take effect.'
               .format(did_id, name), 'small_flash')
-    return index()
+    return redirect('/', code=302)
