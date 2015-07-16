@@ -23,3 +23,10 @@ Dependencies:
  * Requests (2.7.0)
 
 `ajax-loader.gif` courtesy of [ajaxload.info](http://ajaxload.info/).
+
+License
+-------
+Released under MIT license. Additional disclaimer: I do not write web stuff
+for a living and haven't for the last 10 years or so. I have close to zero
+idea what I'm doing here. Do not even speculate that the stuff I'm doing in
+this code is even remotely a good idea. It very probably isn't.
