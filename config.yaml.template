@@ -1,0 +1,25 @@
+# Also make sure to whitelist your IP address.
+
+# This is all stuff that gets passed to the run() method of the Flask app.
+server:
+    port: 5555  # Port to run on
+    host: 0.0.0.0  # Listen on public interface. Without this, only localhost.
+    debug: true  # If you want detailed error barfs.
+
+credentials:
+    username: my@email.address   # Used for VoIP.ms log in
+    password: myapipassword      # Set in the API settings.
+
+dids:
+   # Config format supports more than one DID. App only supports one for now.
+   - id: '2028675309'  # Phone number of your DID.
+     routes:
+         - image: roomba.jpg  # Visual representation of a choice in static/.
+           kind: ivr  # One of 'ivr' or 'fwd'
+           name: My person-switching IVR  # This is the IVR name on VoIP.ms
+         - image: roommate1.jpg
+           kind: fwd
+           name: Roommate \#1's Cell Phone  # Must match forwarder description
+         - image: roommate2.jpg
+           kind: fwd
+           name: Roommate \#2's Cell Phone  # Must match forwarder description

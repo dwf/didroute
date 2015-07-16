@@ -1,0 +1,85 @@
+<html>
+<style type="text/css"> 
+    .container {     
+        display:table;     
+        border-collapse:collapse;   
+        height:90%;
+        width:100%; 
+    }          
+    .layout {     
+        display:table-row;    
+    }            
+    .content {     
+        display:table-cell;   
+        text-align:center;  
+        vertical-align:middle;     
+    }
+    .icon {
+        width: auto;
+        height: 180px;
+    }
+    #mask {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+        display: none; 
+        border-collapse:collapse;   
+	background-color: #777777;
+	left: 0;
+	top : 0;
+	opacity: 0.5;
+    }
+    .big_flash {
+	font-family: helvetica;
+	font-size: 11pt;
+    }
+    .small_flash {
+	font-family: helvetica;
+	font-size: 9pt;
+    }
+    li {
+	margin: 10px 0;
+    }
+    ul.flashes {
+	list-style-type: none;
+    }
+</style>      
+
+
+<body>
+
+<div class="container">     
+    <div class="layout">     
+        <div class="content">  
+		{% set counter = 0 -%}
+		{% for item in did_routes %}
+		<a href="/set/{{ counter }}"><img src="{{ url_for('static', filename=item['image']) }}" class='icon' onclick="$('#mask').show(); return true" style="border: {{ item['border'] }}px solid black; padding: 5px;"></a>
+		{% set counter = counter + 1 -%}
+		{% endfor %}
+	<br />
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <ul class="flashes">
+            {% for category, message in messages %}
+              <li class="{{ category }}">{{ message }}</li>
+            {% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %}
+        </div>
+    </div>    
+</div>
+<div id="mask">
+	<div class="container">
+	<div class="layout">
+		<div class="content">
+			<img src="{{ url_for('static', filename='ajax-loader.gif') }}">
+		</div>
+	</div>
+	</div>
+</div>
+</div>
+<script type=text/javascript src="{{
+  url_for('static', filename='jquery.js') }}"></script>
+</body>
+</html>
