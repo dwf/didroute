@@ -1,4 +1,3 @@
-# Also make sure to whitelist your IP address.
 
 # This is all stuff that gets passed to the run() method of the Flask app.
 server:
@@ -6,9 +5,12 @@ server:
     host: 0.0.0.0  # Listen on public interface. Without this, only localhost.
     debug: true  # If you want detailed error barfs.
 
+# Your VoIP.ms API credentials. Also make sure to whitelist your IP address.
 credentials:
-    username: my@email.address   # Used for VoIP.ms log in
-    password: myapipassword      # Set in the API settings.
+    username: my@email.address   # Used for VoIP.ms login.
+    password: myapipassword      # Not your login password. Set it in VoIP.ms
+                                 # API settings in the web control panel.
+				 # It's a password specifically for API access.
 
 dids:
    # Config format supports more than one DID. App only supports one for now.
