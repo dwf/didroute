@@ -1,9 +1,15 @@
+"""A thin wrapping of the VoIP.ms REST API to make it slightly less than
+horrible to use.
+
+"""
+import contextlib
 from collections import Mapping
 import requests
 from functools import partial
 
 
 def validate_response(response_obj):
+    """Check for HTTP failures, API failures, and return JSON."""
     if response_obj.status_code != requests.codes.ok:
         raise requests.HTTPError('expected status code {}, got {}'
                                  .format(requests.codes.ok,
@@ -17,6 +23,7 @@ def validate_response(response_obj):
 
 
 class VoipMSAPIError(Exception):
+    """Something done gone wrong with that there API, ma."""
     pass
 
 
@@ -36,11 +43,22 @@ class VoipMS(object):
     def credentials(self):
         return {'api_' + s: getattr(self, s) for s in ('username', 'password')}
 
+    @contextlib.contextmanager
+    def credentialed_request(self, request):
+        assert all(k not in request for k in self.credentials.keys())
+        request = dict(request)
+        request.update(self.credentials)
+        yield request
+
 
 class Directory(Mapping):
     """
-    Emulates a dictionary. Returned items are mutable but mutation
-    has no effect.
+    Emulates a dictionary but actually retrieves stuff from a REST call.
+
+    Returned items are mutable but mutation has no effect. The enlightened
+    Python core devs see no use cases for immutable dicts, you see, and so
+    that stubbornness plus my stubbornness to doing the language's job
+    myself means this API sucks slightly more than it could.
 
     """
     def __init__(self, api, method_name, items_key, id_key, factory=dict):
@@ -51,9 +69,8 @@ class Directory(Mapping):
         self.factory = factory
 
     def _query(self):
-        params = {'method': self.method_name}
-        params.update(self.api.credentials)
-        response = validate_response(requests.get(self.api.url, params))
+        with self.api.credentialed_request({'method': self.method_name}) as p:
+            response = validate_response(requests.get(self.api.url, p))
         return response[self.items_key]
 
     def __getitem__(self, key):
@@ -84,6 +101,7 @@ class Directory(Mapping):
 
 
 class DID(dict):
+    """Subclass of Directory with a method for diddling the routing."""
     def __init__(self, mapping, api):
         self.api = api
         super(DID, self).__init__(mapping)
@@ -98,6 +116,6 @@ class DID(dict):
         routing = ':'.join((kind, key))
         params = {'method': 'setDIDRouting', 'routing': routing,
                   'did': self['did']}
-        params.update(self.api.credentials)
-        response = validate_response(requests.get(self.api.url, params))
+        with self.api.credentialed_request(params) as params:
+            response = validate_response(requests.get(self.api.url, params))
         return response
