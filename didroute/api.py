@@ -94,7 +94,8 @@ class Directory(Mapping):
             yield value
 
     def __iter__(self):
-        yield from self.keys()
+        for k in self.keys():
+            yield k
 
     def __len__(self):
         return len(self._query())
